@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+/*
+  BuildAdda brand tokens (Lilac haze palette).
+  Change a colour here and it updates across the whole site.
+  Use them in class names like bg-lilac, text-ink, bg-neon.
+*/
+@theme {
+  --color-lilac: #eadcff; /* page background */
+  --color-ink: #2a0e4f; /* main text and dark sections */
+  --color-neon: #b6ff3b; /* main accent */
+  --color-neon-ink: #1f3300; /* text on neon */
+  --color-tangerine: #ff7a1a; /* second accent, used sparingly */
+  --color-tangerine-ink: #3a1800; /* text on tangerine */
+  --color-mist: #cdb8f5; /* quiet text on dark sections */
+  --color-muted: #5e4a80; /* quiet text on light sections */
+  --color-soft: #4a3470; /* intro paragraph text */
+  --color-line: #d9c8f7; /* input borders */
+  --color-ghost: #b79bea; /* large step numbers */
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-lilac);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-tangerine);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   3D effects
+   ------------------------------------------------------------------ */
+
+/* A box that tilts toward the mouse. The angles come from components/Tilt.js. */
+.tilt {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+}
+
+/* Lifts a child off its tilting parent so layers separate in depth. */
+.pop-sm {
+  transform: translateZ(24px);
+}
+.pop-md {
+  transform: translateZ(48px);
+}
+.pop-lg {
+  transform: translateZ(84px);
+}
+
+/* A thick slab: a solid edge underneath plus a soft shadow on the "floor". */
+.slab {
+  --edge: #cdb8f5;
+  box-shadow:
+    0 10px 0 0 var(--edge),
+    0 30px 44px -16px rgb(42 14 79 / 0.38);
+}
+.slab-ink {
+  --edge: #12052a;
+}
+.slab-neon {
+  --edge: #86c81e;
+}
+
+/* A chunky button that sits on an edge and presses down when clicked. */
+.btn3d {
+  --edge: #12052a;
+  box-shadow: 0 6px 0 0 var(--edge);
+  translate: 0 0;
+  transition:
+    translate 0.12s ease-out,
+    box-shadow 0.12s ease-out;
+}
+.btn3d:hover {
+  translate: 0 -2px;
+  box-shadow: 0 8px 0 0 var(--edge);
+}
+.btn3d:active {
+  translate: 0 6px;
+  box-shadow: 0 0 0 0 var(--edge);
+}
+.btn3d-neon {
+  --edge: #86c81e;
+}
+.btn3d-light {
+  --edge: #cdb8f5;
+}
+
+/* Gentle bobbing. Uses "translate" so it stacks with tilt and rotation. */
+@keyframes bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -12px;
+  }
+}
+.bob {
+  animation: bob 5s ease-in-out infinite;
+}
+.bob-slow {
+  animation: bob 7s ease-in-out infinite;
+  animation-delay: -2s;
+}
+.bob-fast {
+  animation: bob 4s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+/* A real six-sided cube built from CSS. Size comes from --s. */
+.cube-wrap {
+  perspective: 700px;
+}
+.cube {
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  transform-style: preserve-3d;
+  animation: cube-spin 16s linear infinite;
+}
+.cube > span {
+  position: absolute;
+  inset: 0;
+  border-radius: 14%;
+  background: var(--face);
+  backface-visibility: hidden;
+}
+.cube > span:nth-child(1) {
+  transform: translateZ(calc(var(--s) / 2));
+}
+.cube > span:nth-child(2) {
+  transform: rotateY(90deg) translateZ(calc(var(--s) / 2));
+  filter: brightness(0.82);
+}
+.cube > span:nth-child(3) {
+  transform: rotateY(180deg) translateZ(calc(var(--s) / 2));
+  filter: brightness(0.7);
+}
+.cube > span:nth-child(4) {
+  transform: rotateY(-90deg) translateZ(calc(var(--s) / 2));
+  filter: brightness(0.9);
+}
+.cube > span:nth-child(5) {
+  transform: rotateX(90deg) translateZ(calc(var(--s) / 2));
+  filter: brightness(1.12);
+}
+.cube > span:nth-child(6) {
+  transform: rotateX(-90deg) translateZ(calc(var(--s) / 2));
+  filter: brightness(0.6);
+}
+@keyframes cube-spin {
+  from {
+    transform: rotateX(-24deg) rotateY(0deg) rotateZ(8deg);
+  }
+  to {
+    transform: rotateX(-24deg) rotateY(360deg) rotateZ(8deg);
+  }
+}
+
+/* People who ask their device for less motion get a still page. */
+@media (prefers-reduced-motion: reduce) {
+  .tilt {
+    transform: none !important;
+  }
+  .bob,
+  .bob-slow,
+  .bob-fast,
+  .cube {
+    animation: none;
+  }
+  .cube {
+    transform: rotateX(-24deg) rotateY(35deg) rotateZ(8deg);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Motion and polish
+   ------------------------------------------------------------------ */
+
+/* Cursor spotlight on cards. Tilt.js sets --mx and --my as the mouse moves. */
+.spotlight {
+  position: relative;
+}
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.55),
+    rgb(182 255 59 / 0.12) 35%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  mix-blend-mode: soft-light;
+}
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+/* Scroll-in reveal. Content is only hidden once JavaScript has taken over. */
+.reveal {
+  transition:
+    opacity 0.7s ease,
+    translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-pending="true"]:not([data-shown="true"]) {
+  opacity: 0;
+  translate: 0 36px;
+}
+
+/* Endless scrolling category band. The list is drawn twice so the loop is seamless. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Soft glow behind the hero scene. */
+.scene-glow {
+  background:
+    radial-gradient(closest-side, rgb(182 255 59 / 0.45), transparent 70%) 30% 35% / 70% 70% no-repeat,
+    radial-gradient(closest-side, rgb(11 232 240 / 0.35), transparent 70%) 75% 70% / 60% 60% no-repeat;
+  filter: blur(8px);
+}
+
+/* Gradient text that matches the logo. */
+.text-krew {
+  background: linear-gradient(180deg, #a6e21b, #08b9c2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    animation: none;
+  }
+  .reveal[data-pending="true"]:not([data-shown="true"]) {
+    opacity: 1;
+    translate: none;
+  }
+}
