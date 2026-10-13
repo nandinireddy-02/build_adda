@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "db:setup": "node scripts/setup-db.mjs"
+    "db:setup": "node scripts/setup-db.mjs",
+    "git:watch": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/auto-push.ps1"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
